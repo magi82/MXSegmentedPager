@@ -33,6 +33,7 @@
 @implementation MXSegmentedPager {
     CGFloat     _controlHeight;
     NSInteger   _count;
+    Boolean     _isTouching;
 }
 
 - (void)reloadData {
@@ -242,7 +243,10 @@
 #pragma mark HMSegmentedControl target
 
 - (void)pageControlValueChanged:(HMSegmentedControl*)segmentedControl {
-    [self.pager showPageAtIndex:segmentedControl.selectedSegmentIndex animated:YES];
+    if (_isTouching == NO) {
+        [self.pager showPageAtIndex:segmentedControl.selectedSegmentIndex animated:YES];
+        _isTouching = YES;
+    }
 }
 
 #pragma mark <MXPagerViewDelegate>
@@ -254,6 +258,7 @@
 - (void)pagerView:(MXPagerView *)pagerView didMoveToPage:(UIView *)page atIndex:(NSInteger)index {
     [self.segmentedControl setSelectedSegmentIndex:index animated:NO];
     [self changedToIndex:index];
+    _isTouching = NO;
 }
 
 - (void)pagerView:(MXPagerView *)pagerView willDisplayPage:(UIView *)page atIndex:(NSInteger)index {
